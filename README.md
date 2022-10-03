@@ -97,11 +97,24 @@ Endpoint `POST` : `/api/appointments`
 Body = 
 ```
 {
-	"first_name": "CT",
-	"last_name": "JS Drone",
+	"first_name": "Justin",
+	"last_name": "Smith",
 	"kind": "Follow-Up",
 	"date": "12/1/2022 8:00 AM",
 	"time": "12/1/2022 8:00 AM",
 	"doctor_id": "Cq6yAHfy1XTrOmV22E3cEf07rKjwW02J5F2ES1H5FlA"
+}
+```
+Return
+
+```
+{
+    date: "12/1/2022 8:00 AM",
+    doctor_id: "Cq6yAHfy1XTrOmV22E3cEf07rKjwW02J5F2ES1H5FlA",
+    first_name: "Justin",
+    id: "rZ7FZlYMyTjEi-JqUfj8ri0UcGgjTKBYpGQ6AvqZ4Z4",
+    kind: "Follow-Up",
+    last_name: "Smith",
+    time: "2022-12-01T08:00:00"
 }
 ```

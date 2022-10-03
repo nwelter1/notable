@@ -26,6 +26,7 @@ def create_appointment():
     doctor_id = data['doctor_id']
     date = data['date']
     time = date.split(' ')[1]
+    kind = data['kind']
     # check to see that doctor ID is valid
     doctor = Doctor.query.filter_by(id = doctor_id).first()
     if not doctor:
@@ -33,6 +34,8 @@ def create_appointment():
     # check to see if time is valid:
     if time[-2:] not in ['00', '15', '45', '20']:
         return "Please enter a valid time", 409
+    if kind not in ['Follow-Up', 'New Patient']:
+        return "Please enter a valid appointment kind", 409
     # query the doctor's current appointments of that time
     same_time_appointments = Appointment.query.filter_by(date = date).all()
     if len(same_time_appointments) == 3:

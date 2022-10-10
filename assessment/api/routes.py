@@ -32,10 +32,10 @@ def create_appointment():
     if not doctor:
         return {"Error": "Doctor ID not found"}, 404
     # check to see if time is valid:
-    if time[-2:] not in ['00', '15', '45', '20']:
-        return "Please enter a valid time", 409
+    if time[-2:] not in ['00', '15', '30', '45']:
+        return {"Error":"Please enter a valid time"}, 409
     if kind not in ['Follow-Up', 'New Patient']:
-        return "Please enter a valid appointment kind", 409
+        return {"Error":"Please enter a valid appointment kind"}, 409
     # query the doctor's current appointments of that time
     same_time_appointments = Appointment.query.filter_by(date = date).all()
     if len(same_time_appointments) == 3:
@@ -58,3 +58,27 @@ def delete_appt(id):
         db.session.commit()
         return jsonify({'Success': f'Appt ID #{appt.id} has been deleted'}), 300
     return jsonify({'Error': 'That appt ID does not exist!'}), 404
+
+
+
+def time_checker(time):
+    return time[-2:] in ['00', '15', '30', '45']
+
+
+@api.route('/appointments/<id>', methods=['PATCH'])
+@admin_required
+def update_appt(id):
+    appt = Appointment.query.get(id)
+    date_time = request.json['time']
+    time = date_time.split(' ')[1]
+    print(time)
+    if appt:
+        if not time_checker(time):
+            return {"Error":"Please enter a valid time"}, 409
+        appt.time = time
+        db.session.add(appt)
+        db.session.commit()
+        response = appt_schema.dump(appt)
+        return jsonify(response)
+    return {"Error": "Appointment not found"}, 404
+        

@@ -66,7 +66,7 @@ def time_checker(time):
 
 
 @api.route('/appointments/<id>', methods=['PATCH'])
-@admin_required
+# @admin_required
 def update_appt(id):
     appt = Appointment.query.get(id)
     date_time = request.json['time']

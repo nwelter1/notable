@@ -3,6 +3,14 @@ from assessment.models import Doctor, Appointment, appt_schema, appts_schema, do
 
 api = Blueprint('api', __name__, url_prefix='/api')
 
+#Helpers 
+def time_validator(time):
+    return time[-2:] in ['00', '15', '30', '45']
+
+def kind_validator(kind):
+    return kind == 'Follow-Up' or kind == 'New Patient'
+
+
 # GET all docs
 @api.route('/doctors', methods=['GET'])
 def get_doctors():
@@ -32,9 +40,9 @@ def create_appointment():
     if not doctor:
         return {"Error": "Doctor ID not found"}, 404
     # check to see if time is valid:
-    if time[-2:] not in ['00', '15', '30', '45']:
+    if not time_validator(time):
         return {"Error":"Please enter a valid time"}, 409
-    if kind not in ['Follow-Up', 'New Patient']:
+    if not kind_validator(kind):
         return {"Error":"Please enter a valid appointment kind"}, 409
     # query the doctor's current appointments of that time
     same_time_appointments = Appointment.query.filter_by(date = date).all()
@@ -61,8 +69,7 @@ def delete_appt(id):
 
 
 
-def time_checker(time):
-    return time[-2:] in ['00', '15', '30', '45']
+
 
 
 @api.route('/appointments/<id>', methods=['PATCH'])
@@ -73,7 +80,7 @@ def update_appt(id):
     time = date_time.split(' ')[1]
     print(time)
     if appt:
-        if not time_checker(time):
+        if not time_validator(time):
             return {"Error":"Please enter a valid time"}, 409
         appt.time = time
         db.session.add(appt)
